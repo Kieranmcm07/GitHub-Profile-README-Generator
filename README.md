@@ -2,24 +2,21 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Righteous&size=50&pause=1000&color=067e00&center=true&vCenter=true&random=false&width=500&height=70&lines=Welcome!" alt="Typing SVG" />
 </a>
 
-### Hi there <img src="https://raw.githubusercontent.com/nixin72/nixin72/master/wave.gif" width="30px">, I'm Kieran
+### Hi there <img src="https://raw.githubusercontent.com/nixin72/nixin72/master/wave.gif" width="30px">, I'm Testing Tester
 
 ---
 
-**`Student (Creative, Cool, Smart)`**
+**`Student (Thinker, Debuger, Creator)`**
 
-This is a test, this is a test, this is a test
+ok so this is a test readme file to show that this program works efficiently.
 
 🧠 Self-taught. 🧩 Solution-driven. 🚀 Future-focused.
 
 ---
 
 ### 🧰 Languages & Tools
-<img align="left" alt="Python" width="30px" src="https://github.com/devicons/devicon/blob/master/icons/python/python-original.svg" />
-`lua`
-<img align="left" alt="Javascript" width="30px" src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-plain.svg" />
-`rust`
-`java`
+
+<img align="left" alt="python" width="30px" src="https://github.com/devicons/devicon/blob/master/icons/python/python-original.svg" />
 
 <br /><br />
 
@@ -27,14 +24,14 @@ This is a test, this is a test, this is a test
 
 ### 📊 GitHub Stats
 
-![Kieran's GitHub stats](https://github-readme-stats.vercel.app/api?username=Kieranmcm07&show_icons=true&theme=dark)
+![Testing Tester's GitHub stats](https://github-readme-stats.vercel.app/api?username=Testpro89&show_icons=true&theme=dark)
 
 ---
 
 <details>
  <summary><h3>👨‍💻 My Coding Journey</h3></summary>
 
-this is a test, this is a test, this is a test
+ok so this is a test readme file to show that this program works efficiently.
 
 </details>
 
