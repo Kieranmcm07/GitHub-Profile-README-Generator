@@ -1,35 +1,37 @@
-# ReadMe tool for GitHub repositories
-
-# This script generates a README.md file for a GitHub repository.
-
 import os
 
-
 def user_prompt():
-    print("Temp Heading")
-    print("\*\*\* GitHub Profile README Generator \*\*\*")
-    
-    
-    print("This script will ask you a series of questions to generate a README.md file for your GitHub profile.\n Pleae answer the questions as accurately as possible.\n")
-    
-    real_name = input("What is your real name?\n\n > ")
-    github_username = input("What is your GitHub username?\n\n > ")
-    colour_scheme = input("What is your preferred colour scheme? (e.g. 'blue', 'red', 'green' Please answer in a HEX code format)\n\n > ")
-    
-    svg_lines = input("Typing SVG lines (separate with ; like 'Welcome!👋;I'm Kieran!')\n\n > ")
-    
-    job_title = input("What do you call yourself? (e.g., Software Engineer, Web Developer, Student, etc.)\n\n > ")
-    skills = input("List 3 skills or qualities (e.g., Developer • Creator • Problem Solver)\n\n >  ")
-    
-    print("\nWrite a short paragraph about yourself (who you are, what you're into):")
-    about = input("(Press Enter when done):\n > ")
+    print("=== GitHub Profile README Generator ===\n")
+    print("This script will generate a beautiful README.md file for your GitHub profile.\n")
 
-    print("\nHow did you get into coding? Describe your journey or origin story:")
-    journey = input("(Press Enter when done):\n > ")
-    
-    print("\nEnter the languages & tools you want to show (separate with commas). Options include:")
-    print("Python, C, HTML, CSS, JavaScript, PHP, MySQL, Git, GitHub\n")
-    tools = input("Languages & tools: ").lower().split(',')
+    real_name = input("What is your name?\n> ")
+    github_username = input("GitHub username?\n> ")
+    colour_scheme = input("Favourite colour (HEX only, e.g. 067e00)?\n> ").lstrip('#')
+
+    svg_lines = input("Typing SVG lines (separate with ; like 'Welcome!👋;I'm Kieran!')\n> ")
+
+    job_title = input("What do you call yourself? (e.g. Student, Developer)\n> ")
+    skills = input("List 2-4 skills/traits (e.g. Creative • Logical • Learner)\n> ")
+
+    # Minimum character check for about
+    while True:
+        print("\nWrite a paragraph about yourself (minimum 30 characters):")
+        about = input("> ").strip()
+        if len(about) < 30:
+            print("⚠️ Too short. Please add more detail.")
+        else:
+            break
+
+    while True:
+        print("\nDescribe your coding journey (minimum 30 characters):")
+        journey = input("> ").strip()
+        if len(journey) < 30:
+            print("⚠️ Too short. Add more about how you got into coding.")
+        else:
+            break
+
+    print("\nEnter the languages & tools you want to show (comma separated):")
+    tools = input("> ").lower().split(',')
 
     return {
         "name": real_name,
@@ -40,12 +42,11 @@ def user_prompt():
         "skills": skills,
         "about": about,
         "journey": journey,
-        "tools": [t.strip() for t in tools]
+        "tools": [t.strip() for t in tools if t.strip()]
     }
 
-
 def tool_icons(tool):
-    icons = {
+    known_icons = {
         "python": "python/python-original.svg",
         "c": "c/c-original.svg",
         "html": "html5/html5-plain.svg",
@@ -57,8 +58,10 @@ def tool_icons(tool):
         "github": "github/github-original.svg"
     }
     base_url = "https://github.com/devicons/devicon/blob/master/icons/"
-    return f'<img align="left" alt="{tool.title()}" width="30px" src="{base_url}{icons[tool]}" />' if tool in icons else ""
-
+    if tool in known_icons:
+        return f'<img align="left" alt="{tool.title()}" width="30px" src="{base_url}{known_icons[tool]}" />'
+    else:
+        return f"`{tool}`"  # fallback for unknown tools
 
 def readme_generator(data):
     lines = f"""
@@ -79,12 +82,9 @@ def readme_generator(data):
 ---
 
 ### 🧰 Languages & Tools
-
 """
     for tool in data['tools']:
-        icon = tool_icons(tool)
-        if icon:
-            lines += icon + "\n"
+        lines += tool_icons(tool) + "\n"
 
     lines += "\n<br /><br />\n\n---\n\n"
 
@@ -112,7 +112,7 @@ def main():
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme_content.strip())
 
-    print("\n✅ README.md has been created in this folder!\n")
+    print("\n✅ README.md has been created successfully!\n")
 
 if __name__ == "__main__":
     main()
