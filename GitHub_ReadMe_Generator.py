@@ -1,68 +1,127 @@
 import os
+import time
 
+# ✅ Known Devicon tools and languages
+DEVICON_SUPPORTED = {
+    "python": "python/python-original.svg",
+    "c": "c/c-original.svg",
+    "cpp": "cplusplus/cplusplus-original.svg",
+    "java": "java/java-original.svg",
+    "html": "html5/html5-plain.svg",
+    "css": "css3/css3-plain.svg",
+    "javascript": "javascript/javascript-plain.svg",
+    "typescript": "typescript/typescript-original.svg",
+    "php": "php/php-original.svg",
+    "mysql": "mysql/mysql-original-wordmark.svg",
+    "git": "git/git-original.svg",
+    "github": "github/github-original.svg",
+    "bash": "bash/bash-original.svg",
+    "docker": "docker/docker-original.svg",
+    "linux": "linux/linux-original.svg",
+    "nodejs": "nodejs/nodejs-original.svg",
+    "react": "react/react-original.svg",
+    "vue": "vuejs/vuejs-original.svg",
+    "flutter": "flutter/flutter-original.svg",
+    "go": "go/go-original.svg",
+    "ruby": "ruby/ruby-original.svg",
+    "rust": "rust/rust-plain.svg"
+}
+
+# 🌈 Intro menu
+def main_menu():
+    print("\n🎉 Welcome to the GitHub Profile README Generator 🎉")
+    print("-----------------------------------------------------")
+    print("1. 🛠 Start Generator")
+    print("2. ❓ Help (SVG typing banner)")
+    print("3. 🚪 Exit\n")
+
+    choice = input("Pick an option (1-3): ")
+    if choice == "1":
+        data = user_prompt()
+        content = readme_generator(data)
+        with open("README.md", "w", encoding="utf-8") as f:
+            f.write(content.strip())
+        print("\n✅ README.md created successfully!")
+    elif choice == "2":
+        show_help()
+        main_menu()
+    elif choice == "3":
+        print("👋 Goodbye!")
+        exit()
+    else:
+        print("❌ Invalid choice. Try again.")
+        main_menu()
+
+# 🆘 Help section for SVG typing banner
+def show_help():
+    print("\n📝 The 'SVG Typing Banner' shows animated typing text at the top of your README.")
+    print("Example input: Welcome!👋;I'm Kieran!;I build cool tools 💻")
+    print("Each ';' separates a new line of animated text.")
+    print("It looks like this in your README:\n")
+    print("https://readme-typing-svg.herokuapp.com\n")
+
+# 🧠 Ask user questions and build their profile
 def user_prompt():
-    print("=== GitHub Profile README Generator ===\n")
-    print("This script will generate a beautiful README.md file for your GitHub profile.\n")
+    print("\n👤 Let's build your GitHub Profile!\n")
 
-    real_name = input("What is your name?\n> ")
-    github_username = input("GitHub username?\n> ")
-    colour_scheme = input("Favourite colour (HEX only, e.g. 067e00)?\n> ").lstrip('#')
+    name = input("🔤 What is your full name?\n> ")
+    username = input("🔗 GitHub username:\n> ")
+    color = input("🎨 Favourite HEX colour (no #, e.g. 067e00):\n> ").lstrip('#')
+    svg_lines = input("⌨️ Typing SVG lines (e.g. Welcome!;I'm Kieran!):\n> ")
+    title = input("💼 What do you call yourself? (e.g. Developer, Student)\n> ")
+    skills = input("🧰 List 2–4 skills (e.g. Creator • Thinker • Debugger):\n> ")
 
-    svg_lines = input("Typing SVG lines (separate with ; like 'Welcome!👋;I'm Kieran!')\n> ")
-
-    job_title = input("What do you call yourself? (e.g. Student, Developer)\n> ")
-    skills = input("List 2-4 skills/traits (e.g. Creative • Logical • Learner)\n> ")
-
-    # Minimum character check for about
+    # 🔒 Require a decently long about description
     while True:
-        print("\nWrite a paragraph about yourself (minimum 30 characters):")
+        print("\n🗣 Write a short paragraph about yourself (min 30 chars):")
         about = input("> ").strip()
         if len(about) < 30:
-            print("⚠️ Too short. Please add more detail.")
+            print("⚠️ Too short! Give a bit more info.")
         else:
             break
 
     while True:
-        print("\nDescribe your coding journey (minimum 30 characters):")
+        print("\n📖 Describe your coding journey (min 30 chars):")
         journey = input("> ").strip()
         if len(journey) < 30:
-            print("⚠️ Too short. Add more about how you got into coding.")
+            print("⚠️ Too short! Tell more of your story.")
         else:
             break
 
-    print("\nEnter the languages & tools you want to show (comma separated):")
-    tools = input("> ").lower().split(',')
+    tools = []
+    while True:
+        print("\n🛠 Languages & Tools (comma-separated, e.g. Python, C, Git):")
+        raw = input("> ").lower().split(',')
+        unknowns = [t.strip() for t in raw if t.strip() not in DEVICON_SUPPORTED]
+        if unknowns:
+            print(f"❌ These are not recognized: {', '.join(unknowns)}")
+            print("Try again using tools from the supported list.\n")
+            print(", ".join(DEVICON_SUPPORTED.keys()))
+        else:
+            tools = [t.strip() for t in raw if t.strip()]
+            break
 
     return {
-        "name": real_name,
-        "username": github_username,
-        "color": colour_scheme,
+        "name": name,
+        "username": username,
+        "color": color,
         "svg_lines": svg_lines,
-        "job_title": job_title,
+        "job_title": title,
         "skills": skills,
         "about": about,
         "journey": journey,
-        "tools": [t.strip() for t in tools if t.strip()]
+        "tools": tools
     }
 
-def tool_icons(tool):
-    known_icons = {
-        "python": "python/python-original.svg",
-        "c": "c/c-original.svg",
-        "html": "html5/html5-plain.svg",
-        "css": "css3/css3-plain.svg",
-        "javascript": "javascript/javascript-plain.svg",
-        "php": "php/php-original.svg",
-        "mysql": "mysql/mysql-original-wordmark.svg",
-        "git": "git/git-original.svg",
-        "github": "github/github-original.svg"
-    }
-    base_url = "https://github.com/devicons/devicon/blob/master/icons/"
-    if tool in known_icons:
-        return f'<img align="left" alt="{tool.title()}" width="30px" src="{base_url}{known_icons[tool]}" />'
-    else:
-        return f"`{tool}`"  # fallback for unknown tools
+# 🧱 Converts tool name to Devicon image tag
+def tool_icon(tool):
+    base = "https://github.com/devicons/devicon/blob/master/icons/"
+    icon_path = DEVICON_SUPPORTED.get(tool)
+    if icon_path:
+        return f'<img align="left" alt="{tool}" width="30px" src="{base}{icon_path}" />'
+    return f"`{tool}`"  # fallback
 
+# 🧾 Generates the final README content
 def readme_generator(data):
     lines = f"""
 <a align="center" href="https://git.io/typing-svg">
@@ -82,9 +141,10 @@ def readme_generator(data):
 ---
 
 ### 🧰 Languages & Tools
+
 """
     for tool in data['tools']:
-        lines += tool_icons(tool) + "\n"
+        lines += tool_icon(tool) + "\n"
 
     lines += "\n<br /><br />\n\n---\n\n"
 
@@ -105,14 +165,6 @@ def readme_generator(data):
 """
     return lines
 
-def main():
-    data = user_prompt()
-    readme_content = readme_generator(data)
-
-    with open("README.md", "w", encoding="utf-8") as f:
-        f.write(readme_content.strip())
-
-    print("\n✅ README.md has been created successfully!\n")
-
+# 🚀 Entry point
 if __name__ == "__main__":
-    main()
+    main_menu()
