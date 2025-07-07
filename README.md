@@ -61,24 +61,21 @@ python readme_generator.py
 ---
 
 ### 🧩 Features
-<ol>
-    <li>🔧Powerful settings menu.</li>
-    <li>✨Lots of customisation options.</li>
-    <li>🧠Built-in help and guidance for end-users.</li>
-    <li>💥Clean simple ASCII style interface.</li>
-    <li>✅Fully offline support after setup.</li>
-</ol>
+- 🔧Powerful settings menu.
+- ✨Lots of customisation options.
+- 🧠Built-in help and guidance for end-users.
+- 💥Clean simple ASCII style interface.
+- ✅Fully offline support after setup.
 
 ---
 
 ### 🙌 Credits
-<ol>
-    <li>Created by [Kieran McMonagle](https://github.com/Kieranmcm07)</li>
-    <li>Devicon by [@devicon](https://github.com/devicons/devicon)</li>
-    <li>GitHub Stats Card by [@anuraghazra](https://github.com/anuraghazra/github-readme-stats)</li>
-    <li>Typing SVG by [@DenverCoder1](https://github.com/DenverCoder1/readme-typing-svg)</li>
-    <li>Profanity chcker via [better_profanity](https://pypi.org/project/better-profanity/)</li>
-</ol>
+
+- Created by [Kieran McMonagle](https://github.com/Kieranmcm07)
+- Devicon by [@devicon](https://github.com/devicons/devicon)
+- GitHub Stats Card by [@anuraghazra](https://github.com/anuraghazra/github-readme-stats)
+- Typing SVG by [@DenverCoder1](https://github.com/DenverCoder1/readme-typing-svg)
+- Profanity chcker via [better_profanity](https://pypi.org/project/better-profanity/)
 
 ---
 
