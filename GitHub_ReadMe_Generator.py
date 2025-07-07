@@ -219,7 +219,7 @@ def main_menu():
         if choice == "1":
             data = collect_input()
             result = generate_readme(data)
-            with open("README.md", "w", encoding="utf-8") as f:
+            with open("GitHub_README_Profile.md", "w", encoding="utf-8") as f:
                 f.write(result.strip())
             print(f"\n✅ README.md created at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             pause()
