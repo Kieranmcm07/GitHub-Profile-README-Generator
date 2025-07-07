@@ -1,45 +1,77 @@
-import os
-import subprocess
-import sys
-import time
-import json
-import requests
+import os, sys, json, subprocess, requests
 from datetime import datetime
 
-# 📦 Auto-install better_profanity if needed
+# 📦 Auto-install profanity filter
 try:
     from better_profanity import profanity
 except ImportError:
-    print("📦 Installing 'better_profanity' library...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "better_profanity"])
     from better_profanity import profanity
 
-# 🔃 Load Devicon tool list
+# 🔃 Load Devicon icons
 with open("devicon_tools.json", "r", encoding="utf-8") as f:
     DEVICON = json.load(f)
 
-# 🧼 Setup profanity filter
+# 🧠 Load or create settings
+SETTINGS_FILE = "settings.json"
+DEFAULT_SETTINGS = {
+    "use_emojis": True,
+    "stats_theme": "dark",
+    "show_stats": True,
+    "show_streaks": True,
+    "show_languages": True,
+    "add_gif_banner": False,
+    "gif_url": "",
+    "show_quote": True,
+    "quote": "",
+    "visitor_counter": False,
+    "show_badges": True,
+    "center_content": True,
+    "show_journey": True
+}
+
+def load_settings():
+    if os.path.exists(SETTINGS_FILE):
+        with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return DEFAULT_SETTINGS.copy()
+
+def save_settings(settings):
+    with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        json.dump(settings, f, indent=2)
+
+SETTINGS = load_settings()
 profanity.load_censor_words()
 
+# 🚦 Utility
+def pause():
+    input("\n⏸️ Press Enter to continue...")
+
 def is_clean(*args):
-    return not any(profanity.contains_profanity(val) for val in args)
+    return not any(profanity.contains_profanity(str(val)) for val in args)
 
 def github_user_exists(username):
     return requests.get(f"https://api.github.com/users/{username}").status_code == 200
 
 def get_tool_icon(tool):
     base = "https://github.com/devicons/devicon/blob/master/icons/"
-    return (f'<img align="left" alt="{tool}" width="30px" src="{base}{DEVICON[tool]}" />'
-            if tool in DEVICON else f"`{tool}`")
+    return f'<img align="left" alt="{tool}" width="30px" src="{base}{DEVICON[tool]}" />' if tool in DEVICON else f"`{tool}`"
 
+# 🎨 Generate final README using all settings
 def generate_readme(data):
+    center_start = "<div align='center'>" if SETTINGS["center_content"] else ""
+    center_end = "</div>" if SETTINGS["center_content"] else ""
+
     svg = f"Welcome!👋;Hi I'm {data['name']}! 💻"
-    lines = f"""
-<a align="center" href="https://git.io/typing-svg">
+
+    content = f"""
+{center_start}
+<a href="https://git.io/typing-svg">
   <img src="https://readme-typing-svg.herokuapp.com?font=Righteous&size=50&pause=1000&color={data['color']}&center=true&vCenter=true&random=false&width=500&height=70&lines={svg.replace(' ', '+')}" alt="Typing SVG" />
 </a>
+{center_end}
 
-### Hi there <img src="https://raw.githubusercontent.com/nixin72/nixin72/master/wave.gif" width="30px">, I'm {data['name']}
+### Hi there {'👋' if SETTINGS['use_emojis'] else ''}, I'm {data['name']}
 
 ---
 
@@ -47,102 +79,113 @@ def generate_readme(data):
 
 {data['about']}
 
-🧠 Self-taught. 🧩 Solution-driven. 🚀 Future-focused.
-
----
-
-### 🧰 Languages & Tools
 """
+
+    if SETTINGS["quote"]:
+        content += f"> **_{SETTINGS['quote']}_**\n\n"
+
+    if SETTINGS["add_gif_banner"] and SETTINGS["gif_url"]:
+        content += f'<img src="{SETTINGS["gif_url"]}" width="100%" />\n\n'
+
+    content += "---\n\n### 🧰 Languages & Tools\n\n"
     for tool in data['tools']:
-        lines += get_tool_icon(tool) + "\n"
+        content += get_tool_icon(tool) + "\n"
+    content += "\n<br />\n\n---\n\n"
 
-    lines += "\n<br /><br />\n\n---\n\n"
+    if SETTINGS["show_stats"]:
+        content += f"### 📊 GitHub Stats\n\n"
+        content += f"![{data['name']}'s GitHub stats](https://github-readme-stats.vercel.app/api?username={data['username']}&show_icons=true&theme={SETTINGS['stats_theme']})\n\n"
 
-    lines += f"""### 📊 GitHub Stats
+    if SETTINGS["show_streaks"]:
+        content += f"![GitHub Streak](https://streak-stats.demolab.com/?user={data['username']}&theme={SETTINGS['stats_theme']})\n\n"
 
-![{data['name']}'s GitHub stats](https://github-readme-stats.vercel.app/api?username={data['username']}&show_icons=true&theme=dark)
+    if SETTINGS["show_languages"]:
+        content += f"![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username={data['username']}&layout=compact&theme={SETTINGS['stats_theme']})\n\n"
 
----
+    if SETTINGS["visitor_counter"]:
+        content += f"![visitors](https://komarev.com/ghpvc/?username={data['username']}&label=Profile+views)\n\n"
 
-<details>
- <summary><h3>👨‍💻 My Coding Journey</h3></summary>
+    if SETTINGS["show_badges"]:
+        content += "### 🏷️ Badges\n\n"
+        content += "![Python](https://img.shields.io/badge/-Python-blue?style=flat&logo=python)\n"
+        content += "![GitHub](https://img.shields.io/badge/-GitHub-black?style=flat&logo=github)\n"
+        content += "![Open Source](https://img.shields.io/badge/-Open%20Source-important?style=flat&logo=open-source-initiative)\n\n"
 
-{data['journey']}
+    if SETTINGS["show_journey"]:
+        content += "---\n\n<details>\n <summary><h3>👨‍💻 My Coding Journey</h3></summary>\n\n"
+        content += data['journey'] + "\n\n</details>\n"
 
-</details>
+    content += "\n---\n\n### 🙌 Credits\n\n"
+    content += "Built with ❤️ by Kieran McMonagle\n"
+    return content
 
----
+# ⚙️ Settings Menu
+def show_settings_menu():
+    while True:
+        clear()
+        print("🔧 SETTINGS MENU")
+        print("----------------------------")
+        for i, (key, val) in enumerate(SETTINGS.items(), 1):
+            print(f"{i}. {key.replace('_', ' ').title()}: {val}")
+        print(f"{len(SETTINGS)+1}. Save and return")
 
-### 🙌 Credits
+        choice = input("\nChange setting number or press Enter to go back:\n> ")
+        if not choice or choice == str(len(SETTINGS)+1):
+            save_settings(SETTINGS)
+            break
 
-Made with ❤️ by Kieran McMonagle using Python.  
-Powered by Devicon, GitHub Stats Card, Typing SVG & better_profanity.
+        try:
+            idx = int(choice) - 1
+            key = list(SETTINGS.keys())[idx]
+            current = SETTINGS[key]
 
----
-"""
-    return lines
+            if isinstance(current, bool):
+                SETTINGS[key] = not current
+            else:
+                SETTINGS[key] = input(f"Enter new value for '{key}':\n> ").strip()
+        except:
+            print("❌ Invalid input.")
+        pause()
 
+# 📋 Input form
 def collect_input():
     print("\n👤 Let's set up your GitHub Profile README!\n")
     while True:
-        name = input("🔤 Your name:\n> ").strip()
+        name = input("Your name:\n> ").strip()
         if is_clean(name): break
         print("❌ Please avoid inappropriate words.")
 
     while True:
-        username = input("\n🔗 GitHub username:\n> ").strip()
-        if not github_user_exists(username):
-            print("❌ GitHub user not found. Try again.")
-        elif not is_clean(username):
-            print("❌ Inappropriate words detected.")
-        else:
+        username = input("\nGitHub username:\n> ").strip()
+        if github_user_exists(username) and is_clean(username):
             break
+        print("❌ Invalid or offensive username.")
 
-    color = input("\n🎨 HEX colour (e.g. 067e00, no '#'):\n> ").lstrip('#')
-    while True:
-        job_title = input("\n💼 Your role (e.g. Developer, Student):\n> ").strip()
-        skills = input("\n🔧 Skills (e.g. Creator • Learner • Debugger):\n> ").strip()
-        if is_clean(job_title, skills): break
-        print("❌ Please avoid inappropriate language.")
+    color = input("\nHEX colour (no #, e.g. 067e00):\n> ").lstrip('#')
 
     while True:
-        print("\n📜 About you (min 30 chars):")
-        about = input("> ").strip()
-        if len(about) < 30:
-            print("⚠️ Too short.")
-        elif not is_clean(about):
-            print("❌ Please reword without swearing.")
-        else:
-            break
+        title = input("\nYour title (e.g. Developer):\n> ")
+        skills = input("Top 3 skills (e.g. Creative • Debugger):\n> ")
+        if is_clean(title, skills): break
 
     while True:
-        print("\n📖 How did you get into coding? (min 30 chars):")
-        journey = input("> ").strip()
-        if len(journey) < 30:
-            print("⚠️ Please write more.")
-        elif not is_clean(journey):
-            print("❌ Please reword that.")
-        else:
-            break
+        about = input("\nAbout you (min 30 chars):\n> ")
+        if len(about) >= 30 and is_clean(about): break
 
     while True:
-        print("\n🧰 Languages & Tools (comma-separated):")
-        raw = [t.strip() for t in input("> ").lower().split(",")]
-        if not is_clean(*raw):
-            print("❌ Profanity detected. Please re-enter.")
-            continue
-        invalid = [t for t in raw if t not in DEVICON]
-        if invalid:
-            print(f"❌ Unsupported tools: {', '.join(invalid)}")
-        else:
-            tools = raw
-            break
+        journey = input("\nDescribe your coding journey:\n> ")
+        if len(journey) >= 30 and is_clean(journey): break
 
+    while True:
+        tools = input("\nTools/languages (comma-separated):\n> ").lower().split(",")
+        tools = [t.strip() for t in tools if t.strip()]
+        if all(t in DEVICON for t in tools): break
+        print("❌ One or more tools not supported by Devicon.")
     return {
         "name": name,
         "username": username,
         "color": color,
-        "job_title": job_title,
+        "job_title": title,
         "skills": skills,
         "about": about,
         "journey": journey,
@@ -150,54 +193,49 @@ def collect_input():
     }
 
 def show_help():
-    print("\n🆘 How to Use This Program")
-    print("-----------------------------")
-    print("1. Run the script and select 'Start Generator'.")
-    print("2. Answer prompts (they're checked for profanity).")
-    print("3. Your README.md will be generated here.")
-    print("4. Tip: HEX colour sets your banner colour.")
-    print("5. Need icons? Use names from Devicon (e.g. python, rust).\n")
+    print("\n🆘 How to Use")
+    print("- Choose Start to enter your info.")
+    print("- Visit Settings to toggle visual features (GIFs, streaks, quote).")
+    print("- Everything is saved in 'settings.json'.")
+    print("- README.md is created in this folder.")
+    pause()
 
-def show_settings():
-    print("\n⚙️ Settings (future features)")
-    print("-------------------------------")
-    print("- Theme toggle")
-    print("- Emoji on/off")
-    print("- Load/save profiles\n")
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-def show_credits():
-    print("\n🙌 Credits")
-    print("-----------")
-    print("Created by Kieran McMonagle")
-    print("Uses: Devicon, Typing SVG, GitHub Stats, better_profanity\n")
-
+# 🧭 Menu
 def main_menu():
     while True:
-        print("\n✨ GitHub Profile README Generator ✨")
-        print("===================================")
+        clear()
+        print("🌟 GitHub Profile README Generator 🌟")
+        print("====================================")
         print("1. 🚀 Start Generator")
-        print("2. ❓ Help")
-        print("3. ⚙️ Settings")
+        print("2. ⚙️  Settings")
+        print("3. ❓ Help")
         print("4. 🙌 Credits")
         print("5. 🚪 Exit")
-        choice = input("\nPick an option (1–5): ")
+
+        choice = input("\nChoose an option:\n> ")
         if choice == "1":
             data = collect_input()
-            readme = generate_readme(data)
+            result = generate_readme(data)
             with open("README.md", "w", encoding="utf-8") as f:
-                f.write(readme.strip())
-            print(f"\n✅ README.md created at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write(result.strip())
+            print(f"\n✅ README.md created at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            pause()
         elif choice == "2":
-            show_help()
+            show_settings_menu()
         elif choice == "3":
-            show_settings()
+            show_help()
         elif choice == "4":
-            show_credits()
+            print("🙌 Created by Kieran McMonagle with love.")
+            pause()
         elif choice == "5":
             print("👋 Goodbye!")
             break
         else:
-            print("❌ Invalid option. Choose 1–5.\n")
+            print("❌ Invalid input.")
+            pause()
 
 if __name__ == "__main__":
     main_menu()
