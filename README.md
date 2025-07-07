@@ -30,7 +30,7 @@ This is an advanced terminal-based tool that helps you create a standout, fully 
 ### 📸 Preview
 
 <p align="center">
-  <img src="..\GitHub Profile README Generator\assets\image1.png" width="700" alt="Tool Demo" />
+  <img src="../assets/image1.png" width="700" alt="Tool Demo" />
 </p>
 
 ---
