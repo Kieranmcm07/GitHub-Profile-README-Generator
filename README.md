@@ -1,7 +1,7 @@
 <h1 align="center">🚀 GitHub Profile README Generator</h1>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=25&pause=1000&color=2AF7D0&center=true&vCenter=true&random=false&width=500&height=70&lines=Build+Your+Ultimate+GitHub+Profile;No+coding+experience+needed!" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=25&pause=1000&color=2AF7D0&center=true&vCenter=true&random=false&width=600&height=70&lines=Build+Your+Ultimate+GitHub+Profile;No+coding+experience+needed!" alt="Typing SVG" />
 </p>
 
 <p align="center">
