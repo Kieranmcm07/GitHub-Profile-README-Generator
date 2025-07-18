@@ -4,9 +4,14 @@ import json
 DEVICON_API_URL = "https://raw.githubusercontent.com/devicons/devicon/master/devicon.json"
 
 def create_json():
-    response = requests.get(DEVICON_API_URL)
-    if response.status_code != 200:
-        print("❌ Could not fetch Devicon data.")
+    try:
+        response = requests.get(DEVICON_API_URL)
+        # 🔥 FIX THIS LINE: Remove 'response.status_code != 200' from except clause
+        if response.status_code != 200:
+            print("❌ Could not fetch Devicon data.")
+            return
+    except Exception as e:  # Catch any network errors
+        print(f"❌ Connection error: {str(e)}")
         return
 
     data = response.json()

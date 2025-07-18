@@ -37,20 +37,17 @@ This is an advanced terminal-based tool that helps you create a standout, fully 
 
 ### ⚙️ How to Use
 
-#### 🖥️ Python Version
+#### 🖥️ For Windows:
+1. Double-click `run.bat`
+2. Follow the prompts
 
+#### 💻 For Mac/Linux:
 ```bash
 git clone https://github.com/Kieranmcm07/GitHub-Profile-README-Generator
 cd GitHub-Profile-README-Generator
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Generate the Devicon list
+python -m pip install requests better_profanity
 python generate_devicon_json.py
-
-# Run the generator
-python readme_generator.py
+python GitHub_ReadMe_Generator.py
 ```
 
 ---

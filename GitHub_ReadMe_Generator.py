@@ -1,6 +1,9 @@
 import os, sys, json, subprocess, requests
 from datetime import datetime
 
+if not os.path.exists("devicon_tools.json"):
+    os.system("python generate_devicon_tools.py")
+
 # 📦 Auto-install profanity filter
 try:
     from better_profanity import profanity
@@ -8,9 +11,13 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "better_profanity"])
     from better_profanity import profanity
 
-# 🔃 Load Devicon icons
-with open("devicon_tools.json", "r", encoding="utf-8") as f:
-    DEVICON = json.load(f)
+ # 🔃 Load Devicon icons (with auto-generation)
+try:
+    with open("devicon_tools.json", "r", encoding="utf-8") as f:
+       DEVICON = json.load(f)
+except:
+    print("❌ Devicon tools missing! Run generate_devicon_json.py first")
+    sys.exit(1)
 
 # 🧠 Load or create settings
 SETTINGS_FILE = "settings.json"
@@ -116,7 +123,7 @@ def generate_readme(data):
         content += data['journey'] + "\n\n</details>\n"
 
     content += "\n---\n\n### 🙌 Credits\n\n"
-    content += "Built with ❤️ by Kieran McMonagle\n"
+    content += "Built with ⚡ by Kieran McMonagle\n"
     return content
 
 # ⚙️ Settings Menu
