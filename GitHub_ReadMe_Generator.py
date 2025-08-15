@@ -17,6 +17,7 @@ try:
        DEVICON = json.load(f)
 except:
     print("❌ Devicon tools missing! Run generate_devicon_json.py first")
+    print("Please make sure that you have the lastest version of devicon_tools.json in the same folder. And it is not empty.")
     sys.exit(1)
 
 # 🧠 Load or create settings

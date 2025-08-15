@@ -66,6 +66,8 @@ python GitHub_ReadMe_Generator.py
 
 ---
 
+### Created with ⚡ by Kieranmcm07
+
 ### 🙌 Credits
 
 - Created by [Kieran McMonagle](https://github.com/Kieranmcm07)
